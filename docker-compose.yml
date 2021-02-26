@@ -1,0 +1,14 @@
+version: "3"
+services:
+
+  rsyslog:
+#    uncomment this to enable debugging (-d argument)
+#    command: ["/usr/sbin/rsyslogd", "-dn"]
+    build:
+      context: ./
+    image: centos:7
+    ports:
+      - "514:514/udp"
+    volumes:
+      - ./ccmasker:/usr/local/bin/ccmasker:ro
+      - ./files/rsyslog.conf:/etc/rsyslog.conf:ro
