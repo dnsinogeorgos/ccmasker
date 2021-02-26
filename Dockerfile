@@ -11,9 +11,6 @@ RUN yum -y update \
 
 RUN yum -y install \
             rsyslog \
-            nano \
-            bash-completion \
-            which \
         && yum clean all
 
 EXPOSE 514/udp

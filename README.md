@@ -10,19 +10,20 @@ Possible improvements:
 matching with groups to eliminate false positives  
 map of expressions through json config
 
-For more regarding the plugin nature of this tool  
+For more information regarding the plugin nature of this tool  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#external-message-modification-modules  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
 ### Feedback
-Constructive feedback is always very much appreciated.
+Constructive feedback is always appreciated.
 
 ### How to use
 
-Add the following to your rsyslog config and restart
+Add the following to your rsyslog config and restart  
+More information here: https://www.rsyslog.com/doc/master/configuration/modules/mmexternal.html
 ```
 module(load="mmexternal")
-action(type="mmexternal" binary="/path/to/ccmasker" interface.input="msg")
+action(type="mmexternal" binary="/path/to/ccmasker")
 ```
 
 ### Docker compose
