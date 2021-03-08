@@ -36,6 +36,7 @@ type Message struct {
 
 // If PAN data is found, mask PAN and return string.
 // Otherwise return empty string.
+// TODO: experiment with passing pointer to function instead of returning
 func processMessage(text *string, filters *map[string]*regexp.Regexp) string {
 	matched := false
 	message := ""
