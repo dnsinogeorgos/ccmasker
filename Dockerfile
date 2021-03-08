@@ -11,6 +11,7 @@ RUN yum -y update \
 
 RUN yum -y install \
             rsyslog \
+            python3 \
         && yum clean all
 
 EXPOSE 514/udp
