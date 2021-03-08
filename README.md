@@ -1,7 +1,7 @@
 # CC masker
 
-This is a lightweight tool that is intended to be used as a filter with
-Rsyslog. It accepts log messages through stdin.
+This is an experimental lightweight tool, intended to be used as a filter
+with Rsyslog. It accepts log messages through stdin.
 If the message contains a PAN number, it returns the message with a
 masked PAN in a JSON key named "msg".
 Otherwise an empty JSON is returned.
@@ -49,10 +49,10 @@ logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ```
 
 ### Python equivalent
-Wrote an equivalent python script for comparison.
-It is impressive how it performs compared to the go variant.  
-A while loop sending logs to rsyslog with the python version
-has an ~8mb memory footprint compared to ~5mb for go
-and uses roughly .4% cpu compared to .3% for go.  
-Of course these are not proper measurements but still
-it shows how far python has come in terms of performance.
+Wrote an equivalent python script for comparison  
+Took me 10 minutes to write and is almost as fast ¯\_(ツ)_/¯  
+
+### Todo
+write tests  
+split masking to goroutines with a waitgroup and mutex  
+send messages to goroutines  
