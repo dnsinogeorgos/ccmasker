@@ -49,10 +49,10 @@ logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ```
 
 ### Python equivalent
-Wrote an equivalent script for python for comparison.
-It is impressive how it performs compared to the go version.
+Wrote an equivalent python script for comparison.
+It is impressive how it performs compared to the go variant.  
 A while loop sending logs to rsyslog with the python version
 has an ~8mb memory footprint compared to ~5mb for go
 and uses roughly .4% cpu compared to .3% for go.  
-Of course there are not proper measurements but still
+Of course these are not proper measurements but still
 it shows how far python has come in terms of performance.
