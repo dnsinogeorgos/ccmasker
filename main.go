@@ -3,14 +3,18 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
+	"log"
 	"os"
 	"regexp"
+	"runtime"
+	"runtime/pprof"
 	"strings"
 )
 
 // Compile and return pointer to map of filters
-func compileFilters() *map[string]*regexp.Regexp {
+func compileFilters() map[string]*regexp.Regexp {
 	var s = " +\\-_" // String of characters that will be used as separators.
 	var patterns = map[string]string{
 		"XXXX-VISA-XXXX":       "4[0-9]{3}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?([0-9]{4}|[0-9]{1})",
@@ -27,7 +31,7 @@ func compileFilters() *map[string]*regexp.Regexp {
 		filter := regexp.MustCompile(pattern)
 		filters[mask] = filter
 	}
-	return &filters
+	return filters
 }
 
 type Message struct {
@@ -36,37 +40,55 @@ type Message struct {
 
 // If PAN data is found, mask PAN and return string.
 // Otherwise return empty string.
-// TODO: experiment with passing pointer to function instead of returning
-func processMessage(text *string, filters *map[string]*regexp.Regexp) string {
-	matched := false
-	message := ""
-	for mask, filter := range *filters {
+func processMessage(matches *bool, text *string, message *[]byte, filters map[string]*regexp.Regexp) {
+	*matches = false
+	for mask, filter := range filters {
 		if filter.MatchString(*text) {
-			if matched == false {
-				matched = true
-				message = *text
+			if *matches == false {
+				*matches = true
 			}
-			message = filter.ReplaceAllLiteralString(message, mask)
+			*text = filter.ReplaceAllLiteralString(*text, mask)
 		}
 	}
 
-	if matched == false {
-		return "{}"
+	if *matches == false {
+		*text = "{}"
 	} else {
-		jsonMessage, err := json.Marshal(Message{Msg: message})
+		var err error
+		*message, err = json.Marshal(Message{Msg: *text})
 		if err != nil {
-			fmt.Printf("Error %s occured during json Marshal of %s", err, message)
+			fmt.Printf("Error %s occured during json Marshal of %s", err, *text)
 		}
-		return fmt.Sprintf(string(jsonMessage))
+		*text = string(*message)
 	}
 }
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
+var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+
 // Open Stdin, compile regex, loop over lines
 func main() {
+	flag.Parse()
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal("could not create CPU profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		if err := pprof.StartCPUProfile(f); err != nil {
+			log.Fatal("could not start CPU profile: ", err)
+		}
+		defer pprof.StopCPUProfile()
+	}
+
+	var err error = nil
 	reader := bufio.NewReader(os.Stdin)
 	filters := compileFilters()
+	matches := false
+	text := ""
+	message := make([]byte, 4096)
 	for {
-		text, err := reader.ReadString('\n')
+		text, err = reader.ReadString('\n')
 		if err != nil {
 			if err.Error() == "EOF" {
 				break
@@ -75,6 +97,19 @@ func main() {
 			}
 		}
 		text = strings.TrimSuffix(text, "\n")
-		fmt.Println(processMessage(&text, filters))
+		processMessage(&matches, &text, &message, filters)
+		fmt.Println(text)
+	}
+
+	if *memprofile != "" {
+		f, err := os.Create(*memprofile)
+		if err != nil {
+			log.Fatal("could not create memory profile: ", err)
+		}
+		defer f.Close() // error handling omitted for example
+		runtime.GC()    // get up-to-date statistics
+		if err := pprof.WriteHeapProfile(f); err != nil {
+			log.Fatal("could not write memory profile: ", err)
+		}
 	}
 }
