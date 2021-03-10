@@ -41,9 +41,9 @@ type Message struct {
 
 // Get pointers to values to minimize copying
 // If PAN data is found mask PAN in place
-func processMessage(matches *bool, message *string, response *[]byte, filters map[string]*regexp.Regexp) {
+func processMessage(matches *bool, message *string, response *[]byte, filters *map[string]*regexp.Regexp) {
 	*matches = false
-	for mask, filter := range filters {
+	for mask, filter := range *filters {
 		if filter.MatchString(*message) {
 			if *matches == false {
 				*matches = true
@@ -115,7 +115,7 @@ func main() {
 		message = strings.TrimSuffix(message, "\n")
 
 		// Process message and print
-		processMessage(&matches, &message, &response, filters)
+		processMessage(&matches, &message, &response, &filters)
 		fmt.Println(message)
 	}
 
