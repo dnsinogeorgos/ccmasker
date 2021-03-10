@@ -34,47 +34,52 @@ func compileFilters() map[string]*regexp.Regexp {
 	return filters
 }
 
+// Struct to generate proper JSON response to Rsyslog
 type Message struct {
 	Msg string `json:"msg"`
 }
 
-// If PAN data is found, mask PAN and return string.
-// Otherwise return empty string.
-func processMessage(matches *bool, text *string, message *[]byte, filters map[string]*regexp.Regexp) {
+// Get pointers to values to minimize copying
+// If PAN data is found mask PAN in place
+func processMessage(matches *bool, message *string, response *[]byte, filters map[string]*regexp.Regexp) {
 	*matches = false
 	for mask, filter := range filters {
-		if filter.MatchString(*text) {
+		if filter.MatchString(*message) {
 			if *matches == false {
 				*matches = true
 			}
-			*text = filter.ReplaceAllLiteralString(*text, mask)
+			*message = filter.ReplaceAllLiteralString(*message, mask)
 		}
 	}
 
+	// If PAN data isn't found, return empty JSON
+	// Otherwise wrap to JSON and save
 	if *matches == false {
-		*text = "{}"
+		*message = "{}"
 	} else {
 		var err error
-		*message, err = json.Marshal(Message{Msg: *text})
+		*response, err = json.Marshal(Message{Msg: *message})
 		if err != nil {
-			fmt.Printf("Error %s occured during json Marshal of %s", err, *text)
+			fmt.Printf("Error %s occured during json Marshal of %s", err, *message)
 		}
-		*text = string(*message)
+		*message = string(*response)
 	}
 }
 
+// Function to defer closing of profile files with error handling
 func MustClose(file *os.File, message string) {
 	if err := file.Close(); err != nil {
 		log.Fatal(message, err)
 	}
 }
 
+// Initialize flags globally
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 
-// Open Stdin, compile regex, loop over lines
 func main() {
 	flag.Parse()
+	// Conditional CPU profiling
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
@@ -87,26 +92,34 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	var err error = nil
+	// Initialize variables
+	var err error
+	var matches bool
+	var message string
+	response := make([]byte, 8192)
+
+	// Initialize reader and compile regexp filters
 	reader := bufio.NewReader(os.Stdin)
 	filters := compileFilters()
-	matches := false
-	text := ""
-	message := make([]byte, 4096)
+
 	for {
-		text, err = reader.ReadString('\n')
+		// Get next message and strip trailing newline
+		message, err = reader.ReadString('\n')
 		if err != nil {
 			if err.Error() == "EOF" {
 				break
 			} else {
-				fmt.Printf("Error %s occured during reader ReadString of %s\n", err, text)
+				fmt.Printf("Error %s occured during reader ReadString of %s\n", err, message)
 			}
 		}
-		text = strings.TrimSuffix(text, "\n")
-		processMessage(&matches, &text, &message, filters)
-		fmt.Println(text)
+		message = strings.TrimSuffix(message, "\n")
+
+		// Process message and print
+		processMessage(&matches, &message, &response, filters)
+		fmt.Println(message)
 	}
 
+	// Conditional memory profiling
 	if *memprofile != "" {
 		f, err := os.Create(*memprofile)
 		if err != nil {
