@@ -87,14 +87,14 @@ func main() {
 		var fm *os.File
 		fm, err = os.Create(*memprofile)
 		if err != nil {
-			log.Fatal("could not create memory profile: ", err)
+			log.Fatalf("could not create memory profile: %s\n", err)
 		}
-		defer closeWithErrorHandling(fm, "could not close memory profile file: ")
+		defer closeWithErrorHandling(fm, "could not close memory profile file: %s\n")
 
 		runtime.GC()
 		err = pprof.WriteHeapProfile(fm)
 		if err != nil {
-			log.Fatal("could not write memory profile: ", err)
+			log.Fatalf("could not write memory profile: %s\n", err)
 		}
 	}
 }
