@@ -5,11 +5,6 @@ import (
 	"regexp"
 )
 
-// Struct to generate proper JSON response to Rsyslog
-type Message struct {
-	Msg string `json:"msg"`
-}
-
 // Get pointers to values to minimize copying
 // If PAN data is found mask PAN in place
 func processMessage(matches *bool, message *string, response *[]byte, filters map[string]*regexp.Regexp) {
@@ -29,7 +24,9 @@ func processMessage(matches *bool, message *string, response *[]byte, filters ma
 		*message = "{}"
 	} else {
 		var err error
-		*response, err = json.Marshal(Message{Msg: *message})
+		*response, err = json.Marshal(struct {
+			Msg string `json:"msg"`
+		}{Msg: *message})
 		if err != nil {
 			printError("Error %s occured during json Marshal of %s\n", err, *message)
 		}
