@@ -21,7 +21,7 @@ func processMessage(matches *bool, message *string, response *[]byte, filters ma
 	// If PAN data isn't found, return empty JSON
 	// Otherwise wrap to JSON and save
 	if *matches == false {
-		*message = "{}"
+		*message = "{}\n"
 	} else {
 		var err error
 		*response, err = json.Marshal(struct {

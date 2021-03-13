@@ -4,17 +4,17 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"runtime"
 	"runtime/pprof"
-	"strings"
 )
 
 // Function to defer closing of profile files with error handling
-func mustClose(file *os.File, message string) {
+func closeWithErrorHandling(file *os.File, message string) {
 	if err := file.Close(); err != nil {
-		log.Fatalf(message, err)
+		log.Printf(message, err)
 	}
 }
 
@@ -32,29 +32,34 @@ var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 
 func main() {
 	flag.Parse()
+
+	// Initialize variables
+	var err error
+	var matches bool
+	var message string
+	response := make([]byte, 0)
+
 	// Conditional CPU profiling
 	if *cpuprofile != "" {
-		f, err := os.Create(*cpuprofile)
+		var fc *os.File
+		fc, err = os.Create(*cpuprofile)
 		if err != nil {
 			log.Fatalf("Could not create CPU profile: %s\n", err)
 		}
-		defer mustClose(f, "Could not close cpu profile file: %s\n")
+		defer closeWithErrorHandling(fc, "Could not close cpu profile file: %s\n")
 
-		err = pprof.StartCPUProfile(f)
+		err = pprof.StartCPUProfile(fc)
 		if err != nil {
 			log.Fatalf("Could not start CPU profile: %s\n", err)
 		}
 		defer pprof.StopCPUProfile()
 	}
 
-	// Initialize variables
-	var err error
-	var matches bool
-	var message string
-	response := make([]byte, 8192)
-
-	// Initialize reader and compile regexp filters
+	// Initialize buffered reader and unbuffered writer
 	reader := bufio.NewReader(os.Stdin)
+	writer := io.StringWriter(os.Stdout)
+
+	// Compile regexp filters
 	filters := compileFilters()
 
 	for {
@@ -68,23 +73,26 @@ func main() {
 				continue
 			}
 		}
-		message = strings.TrimSuffix(message, "\n")
 
 		// Process message and print
 		processMessage(&matches, &message, &response, filters)
-		fmt.Println(message)
+		_, err = writer.WriteString(message)
+		if err != nil {
+			log.Fatalf("Error %s occured during writing to Stdout\n", err)
+		}
 	}
 
 	// Conditional memory profiling
 	if *memprofile != "" {
-		f, err := os.Create(*memprofile)
+		var fm *os.File
+		fm, err = os.Create(*memprofile)
 		if err != nil {
 			log.Fatal("could not create memory profile: ", err)
 		}
-		defer mustClose(f, "could not close cpu profile file: ")
+		defer closeWithErrorHandling(fm, "could not close memory profile file: ")
 
 		runtime.GC()
-		err = pprof.WriteHeapProfile(f)
+		err = pprof.WriteHeapProfile(fm)
 		if err != nil {
 			log.Fatal("could not write memory profile: ", err)
 		}
