@@ -33,6 +33,6 @@ func processMessage(message string, filters map[string]*regexp.Regexp) string {
 		if err != nil {
 			printError("Error %s occured during json Marshal of %s\n", err, message)
 		}
-		return string(response)
+		return string(response) + "\n"
 	}
 }
