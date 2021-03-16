@@ -9,7 +9,7 @@ import (
 // Get pointers to values to minimize copying
 // If PAN data is found mask PAN in place
 func processMessage(message string, filters map[string]*regexp.Regexp) string {
-	matches := false
+	var matches bool
 
 	for mask, filter := range filters {
 		if filter.MatchString(message) {
@@ -31,7 +31,7 @@ func processMessage(message string, filters map[string]*regexp.Regexp) string {
 			Msg string `json:"msg"`
 		}{Msg: message})
 		if err != nil {
-			printError("Error %s occured during json Marshal of %s\n", err, message)
+			printErrorWithErrorHandling("Error %s occured during json Marshal of %s\n", err, message)
 		}
 		return string(response) + "\n"
 	}

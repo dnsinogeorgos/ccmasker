@@ -20,7 +20,7 @@ func closeWithErrorHandling(file *os.File, message string) {
 }
 
 // Function to print to Stderr with error handling
-func printError(f string, v ...interface{}) {
+func printErrorWithErrorHandling(f string, v ...interface{}) {
 	_, err := fmt.Fprintf(os.Stderr, f, v...)
 	if err != nil {
 		log.Fatalf("Could not print to Stderr: %s\n", err)
@@ -63,7 +63,7 @@ func main() {
 			if err.Error() == "EOF" {
 				break
 			} else {
-				printError("Error %s occured during reader ReadString of %s\n", err, message)
+				printErrorWithErrorHandling("Error %s occured during reader ReadString of %s\n", err, message)
 				continue
 			}
 		}

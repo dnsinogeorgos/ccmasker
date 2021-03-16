@@ -53,6 +53,9 @@ Wrote an equivalent python script for comparison
 Took me 10 minutes to write and is almost as fast ¯\_(ツ)_/¯  
 
 ### Todo
-write tests  
-split masking to goroutines with a waitgroup and mutex  
-send messages to goroutines  
+##### write tests  
+(experimenting with benchmarks, will write some tests as well)  
+##### split masking to goroutines with a waitgroup and mutex?  
+(can also use log writer which is safe for printing to stdout from multiple goroutines)  
+##### send messages to goroutines?  
+(testing showed that performance suffered, got 3x cpu time for a ~15% performance increase, looking more into this)  
