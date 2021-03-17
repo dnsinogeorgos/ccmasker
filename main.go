@@ -7,10 +7,9 @@ import (
 	"io"
 	"log"
 	"os"
+	"regexp"
 	"runtime"
 	"runtime/pprof"
-
-	"github.com/moovweb/rubex"
 )
 
 // Function to defer closing of profile files with error handling
@@ -54,7 +53,7 @@ func main() {
 	writer := io.StringWriter(os.Stdout)
 
 	// Initialize and compile filters
-	filters := make(map[string]*rubex.Regexp)
+	filters := make(map[string]*regexp.Regexp)
 	compileFilters(filters)
 
 	for {

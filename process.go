@@ -2,14 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"regexp"
 	"strings"
-
-	"github.com/moovweb/rubex"
 )
 
 // Get pointers to values to minimize copying
 // If PAN data is found mask PAN in place
-func processMessage(message string, filters map[string]*rubex.Regexp) string {
+func processMessage(message string, filters map[string]*regexp.Regexp) string {
 	var matches bool
 
 	for mask, filter := range filters {
@@ -17,7 +16,7 @@ func processMessage(message string, filters map[string]*rubex.Regexp) string {
 			if matches == false {
 				matches = true
 			}
-			message = filter.ReplaceAllString(message, mask)
+			message = filter.ReplaceAllLiteralString(message, mask)
 		}
 	}
 
