@@ -3,5 +3,6 @@
 venv
 ccmasker
 
+testdata
 *.prof
 *.svg
