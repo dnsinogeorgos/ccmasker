@@ -1,9 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"strings"
 
-	jsoniter "github.com/json-iterator/go"
 	"github.com/moovweb/rubex"
 )
 
@@ -28,7 +28,7 @@ func processMessage(message string, filters map[string]*rubex.Regexp) string {
 	} else {
 		var err error
 		message = strings.TrimSuffix(message, "\n")
-		response, err := jsoniter.Marshal(struct {
+		response, err := json.Marshal(struct {
 			Msg string `json:"msg"`
 		}{Msg: message})
 		if err != nil {
