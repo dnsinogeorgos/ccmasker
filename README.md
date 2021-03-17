@@ -51,7 +51,8 @@ logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ### Python equivalent
 Wrote an equivalent python script for comparison  
 Took me 10 minutes to write and is almost as fast ¯\_(ツ)_/¯  
-Update: upon testing with real logs, the python script was faster (34s to 27s for same dataset)  
+Update: upon testing with real logs, the python script was faster (34s to 27s for same dataset)
+Update 2: upon testing with rubex and jsoniter, go got down to 25s time. changes on faster-with-non-stdlib branch  
 
 
 ### Todo
