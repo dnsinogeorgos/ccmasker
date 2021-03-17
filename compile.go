@@ -1,9 +1,11 @@
 package main
 
-import "regexp"
+import (
+	"github.com/moovweb/rubex"
+)
 
 // Compile and return pointer to map of filters
-func compileFilters(filters map[string]*regexp.Regexp) {
+func compileFilters(filters map[string]*rubex.Regexp) {
 	var patterns = map[string]string{
 		"XXXX-VISA-XXXX":       "4[0-9]{3}[ +\\-_]?[0-9]{4}[ +\\-_]?[0-9]{4}[ +\\-_]?([0-9]{4}|[0-9]{1})",
 		"XXXX-Master5xxx-XXXX": "5[1-5]{1}[0-9]{2}[ +\\-_]?[0-9]{4}[ +\\-_]?[0-9]{4}[ +\\-_]?[0-9]{4}",
@@ -16,7 +18,7 @@ func compileFilters(filters map[string]*regexp.Regexp) {
 	}
 
 	for mask, pattern := range patterns {
-		filter := regexp.MustCompile(pattern)
+		filter := rubex.MustCompile(pattern)
 		filters[mask] = filter
 	}
 }
