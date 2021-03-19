@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"regexp"
 	"runtime"
 	"runtime/pprof"
 )
@@ -52,7 +53,8 @@ func main() {
 	writer := io.StringWriter(os.Stdout)
 
 	// Initialize and compile filters
-	filters := compileFilters(patterns)
+	filters := make(map[string]*regexp.Regexp)
+	compileFilters(filters)
 
 	for {
 		// Get next message and strip trailing newline
