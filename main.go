@@ -28,8 +28,10 @@ func printErrorWithErrorHandling(f string, v ...interface{}) {
 }
 
 // Initialize flags globally
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
-var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+var (
+	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
+	memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+)
 
 func main() {
 	flag.Parse()

@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-// Get pointers to values to minimize copying
 // If PAN data is found mask PAN in place
 func processMessage(message string, filters map[string]*regexp.Regexp) string {
 	var matches bool

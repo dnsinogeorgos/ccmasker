@@ -6,7 +6,7 @@ If the message contains a PAN number, it returns the message with a
 masked PAN in a JSON key named "msg".
 Otherwise an empty JSON is returned.
 
-Possible improvements:  
+##### Possible improvements:  
 matching with groups to eliminate false positives  
 map of expressions through json config
 
@@ -51,14 +51,11 @@ logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ### Python equivalent
 Wrote an equivalent python script for comparison  
 Took me 10 minutes to write and is almost as fast ¯\_(ツ)_/¯  
-Update: upon testing with real logs, the python script was faster (34s to 27s for same dataset)
+Update: upon testing with real logs, the python script was faster (34s to 27s for same dataset)  
 Update 2: upon testing with rubex and jsoniter, go got down to 25s time. changes on faster-with-non-stdlib branch  
-
 
 ### Todo
 ##### write tests  
-(experimenting with benchmarks, will write some tests as well)  
-##### split masking to goroutines with a waitgroup and mutex?  
-(can also use log writer which is safe for printing to stdout from multiple goroutines)  
+experiment with benchmarks, write some tests as well  
 ##### send messages to goroutines?  
-(testing showed that performance suffered, got 3x cpu time for a ~15% performance increase, looking more into this)  
+**no**, rsyslog will spawn processes as needed  
