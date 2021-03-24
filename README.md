@@ -25,7 +25,9 @@ action(type="mmexternal" binary="/path/to/ccmasker")
 ### Docker compose
 Build and let it run in the foreground in order to see the output
 ```
-go build . && docker-compose up
+cd docker
+go build .
+docker-compose up
 ```
 
 Rebuild the image with

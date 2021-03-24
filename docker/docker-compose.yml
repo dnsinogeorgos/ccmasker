@@ -10,5 +10,5 @@ services:
     ports:
       - "514:514/udp"
     volumes:
-      - ./ccmasker:/usr/local/bin/ccmasker:ro
+      - ../ccmasker:/usr/local/bin/ccmasker:ro
       - ./files/rsyslog.conf:/etc/rsyslog.conf:ro
