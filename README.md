@@ -62,4 +62,4 @@ sys     0m1,187s
 ##### write tests  
 - experiment with benchmarks, write some tests as well  
 ##### send messages to goroutines?  
-- **no**, rsyslog will spawn processes as needed
+- **no**, rsyslog will spawn processes as needed, also, order must be guaranteed
