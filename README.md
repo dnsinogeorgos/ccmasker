@@ -7,7 +7,6 @@ Rsyslog will spawn more processes as needed, and expects to receive messages in 
 If the message contains a PAN number, it returns the message with a
 masked PAN in a JSON key named "msg".  
 Otherwise, an empty JSON is returned.  
-This spawns a singlethreaded process, rsyslog will spawn processes as needed, also, order must be guaranteed
 
 For more information regarding the plugin nature of this tool:  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#external-message-modification-modules  
