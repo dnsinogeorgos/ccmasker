@@ -13,6 +13,7 @@ echo 'svg > mem_objects.svg' | go tool pprof -alloc_objects mem.prof 2&> /dev/nu
 
 #echo "timing ccmasker written in go (1.16)"
 #time zcat testdata/*.gz | ./ccmasker > /dev/null
+#echo
 #echo "timing ccmasker written in python (3.9)"
 #time zcat testdata/*.gz | ./ccmasker.py > /dev/null
 

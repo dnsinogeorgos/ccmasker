@@ -43,7 +43,20 @@ logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ### ccmasker.py
 Wrote an equivalent python script for comparison  
 Took me 10 minutes to write and is actually faster ¯\_(ツ)_/¯  
-A test with 92mb of real logs finished in 35 seconds
+A test with 92mb of real logs
+```
+timing ccmasker written in go (1.16)
+
+real    0m35,229s
+user    0m40,579s
+sys     0m1,560s
+
+timing ccmasker written in python (3.9)
+
+real    0m28,074s
+user    0m31,777s
+sys     0m1,187s
+```
 
 ### TODO
 ##### write tests  
