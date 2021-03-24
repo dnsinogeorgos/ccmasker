@@ -6,16 +6,12 @@ If the message contains a PAN number, it returns the message with a
 masked PAN in a JSON key named "msg".
 Otherwise an empty JSON is returned.
 
-##### Possible improvements:  
-matching with groups to eliminate false positives  
-map of expressions through json config
-
 For more information regarding the plugin nature of this tool  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#external-message-modification-modules  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
 ### Feedback
-Constructive feedback is always appreciated.
+This was a learning experiment, constructive feedback is always appreciated.
 
 ### How to use
 
@@ -27,14 +23,9 @@ action(type="mmexternal" binary="/path/to/ccmasker")
 ```
 
 ### Docker compose
-Build with
+Build and let it run in the foreground in order to see the output
 ```
-go build .
-```
-
-Let it run in the foreground in order to see the output
-```
-docker-compose up
+go build . && docker-compose up
 ```
 
 Rebuild the image with
@@ -43,19 +34,17 @@ docker-compose build
 ```
 
 Send logs to the listening port  
-I am assuming you work on a linux environment, if not, look for an alternative
 ```
 logger -d -n localhost "this log message 5311111111111111 contains a PAN"
 ```
 
-### Python equivalent
+### ccmasker.py
 Wrote an equivalent python script for comparison  
-Took me 10 minutes to write and is almost as fast ¯\_(ツ)_/¯  
-Update: upon testing with real logs, the python script was faster (34s to 27s for same dataset)  
-Update 2: upon testing with rubex and jsoniter, go got down to 25s time. changes on faster-with-non-stdlib branch  
+Took me 10 minutes to write and is actually faster ¯\_(ツ)_/¯  
+A test with 92mb of real logs finished in 35 seconds
 
-### Todo
+### TODO
 ##### write tests  
-experiment with benchmarks, write some tests as well  
+- experiment with benchmarks, write some tests as well  
 ##### send messages to goroutines?  
-**no**, rsyslog will spawn processes as needed  
+- **no**, rsyslog will spawn processes as needed
