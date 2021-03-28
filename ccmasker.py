@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Lala
+This is a PAN number masking plugin for Rsyslog.
 """
 
 import sys
