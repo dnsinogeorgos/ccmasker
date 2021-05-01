@@ -9,7 +9,7 @@ import json
 import fast_luhn as fl
 
 
-def compile_patterns(s):
+def compile_patterns(s):  # pylint: disable=C0103  # noqa: E501
     """
     Compiles regex patterns.
 
@@ -54,6 +54,7 @@ def process_message(msg, patterns, separators):
     if matched:
         return json.dumps({"msg": msg})
     return json.dumps({})
+
 
 def __main__():
     separators = " +-_"
