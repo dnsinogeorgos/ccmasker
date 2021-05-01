@@ -9,7 +9,7 @@ import json
 import fast_luhn as fl
 
 
-def compile_patterns(s):  # pylint: disable=C0103  # noqa: E501
+def compile_patterns(s):  # pylint: disable=C0103
     """
     Compiles regex patterns.
 

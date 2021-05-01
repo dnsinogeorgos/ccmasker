@@ -1,0 +1,22 @@
+name: Python repo workflow
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    - name: Install dependencies
+      run: |
+        python3 -m venv venv
+        venv/bin/pip install --upgrade pip
+        venv/bin/pip install -r requirements.txt
+    - name: Lint with pylint and flake8
+      run: |
+        venv/bin/pylint ccmasker.py
+        venv/bin/flake8 ccmasker.py
