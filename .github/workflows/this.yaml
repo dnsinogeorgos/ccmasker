@@ -16,7 +16,8 @@ jobs:
         python3 -m venv venv
         venv/bin/pip install --upgrade pip
         venv/bin/pip install -r requirements.txt
-    - name: Lint with pylint and flake8
+    - name: Lint with pylint, flake8 and black
       run: |
         venv/bin/pylint ccmasker.py
         venv/bin/flake8 ccmasker.py
+        venv/bin/black ccmasker.py

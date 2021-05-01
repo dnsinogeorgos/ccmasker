@@ -16,6 +16,7 @@ def compile_patterns(s):  # pylint: disable=C0103
     :param separators: string of characters used as separators
     :return: dict of patterns with values of type Pattern.
     """
+    # fmt: off
     regex_patterns = {
         "XXXX-VISA-XXXX": "4[0-9]{3}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?([0-9]{4}|[0-9]{1})",  # pylint: disable=C0301  # noqa: E501
         "XXXX-Master5xxx-XXXX": "5[1-5]{1}[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}",  # pylint: disable=C0301  # noqa: E501
@@ -26,6 +27,7 @@ def compile_patterns(s):  # pylint: disable=C0103
         "XXXX-DinersUSC-XXXX": "54[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}",  # pylint: disable=C0301  # noqa: E501
         "XXXX-DinersInt-XXXX": "36[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{2,4}[" + s + "]?[0-9]{0,3}",  # pylint: disable=C0301  # noqa: E501
     }
+    # fmt: on
     compiled_patterns = {}
     for mask, pattern in regex_patterns.items():
         compiled_patterns[mask] = re.compile(pattern)
