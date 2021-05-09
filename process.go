@@ -9,8 +9,6 @@ import (
 	"github.com/theplant/luhn"
 )
 
-const maxMatches = 3
-
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
 func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) (string, error) {
 	validated := false
@@ -21,7 +19,7 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 			for _, fixedPattern := range group.Fixed {
 				// If fixed length pattern matches move on
 				if fixedPattern.MatchString(message) {
-					matchStrings := fixedPattern.FindAllString(message, maxMatches)
+					matchStrings := fixedPattern.FindAllString(message, -1)
 					for _, match := range matchStrings {
 						cleanMatch := numFilter.ReplaceAllString(match, "")
 						cleanInt, err := strconv.Atoi(cleanMatch)

@@ -19,7 +19,7 @@ def compile_patterns():
     :return: dict of patterns with values of type Pattern.
     """
     # fmt: off
-    s = "[ +\\-_=]"  # pylint: disable=C0103
+    s = "[ +=_-]"  # pylint: disable=C0103
     # pylint: disable=C0301
     regex_patterns = {
         "XXXX-VISA-XXXX": {
