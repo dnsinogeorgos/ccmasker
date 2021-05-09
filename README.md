@@ -65,9 +65,20 @@ timing ccmasker written in python (3.9)
 real    0m23,904s
 user    0m26,725s
 sys     0m1,406s
+
+timing ccmasker2 written in go (1.16)
+
+real    0m34,526s
+user    0m40,160s
+sys     0m1,600s
+
+timing ccmasker2 written in python (3.9)
+
+real    0m28,051s
+user    0m31,487s
+sys     0m1,303s
 ```
 
 ### TODO
-* version 2 in Golang
 * experiment with benchmarks  
 * write some tests

@@ -55,8 +55,11 @@ func main() {
 	writer := io.StringWriter(os.Stdout)
 
 	// Initialize and compile filters
-	filters := make(map[string]*regexp.Regexp)
-	compileFilters(filters)
+	numFilter, err := regexp.Compile("[^0-9]")
+	if err != nil {
+		log.Fatalf("could not compile number filter: %s", err)
+	}
+	filters := CompileFilters()
 
 	for {
 		// Get next message and strip trailing newline
@@ -71,7 +74,7 @@ func main() {
 		}
 
 		// Process message and print
-		response := processMessage(message, filters)
+		response := ProcessMessage(message, filters, numFilter)
 		_, err = writer.WriteString(response)
 		if err != nil {
 			log.Fatalf("Error %s occured during writing to Stdout\n", err)
