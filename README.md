@@ -13,7 +13,7 @@ https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#ext
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
 ### How to use
-Add the following to your rsyslog config and restart  
+Add the following to your rsyslog config and restart.
 More information here https://www.rsyslog.com/doc/master/configuration/modules/mmexternal.html
 ```
 module(load="mmexternal")
@@ -32,13 +32,13 @@ variable length of matches.
 Wrote an equivalent python script for comparison and it is actually faster ¯\_(ツ)_/¯  
 A test with 748mb of real logs
 ```
-timing ccmasker2 written in go (1.16)
+timing ccmasker written in go (1.16)
 
 real    0m34,526s
 user    0m40,160s
 sys     0m1,600s
 
-timing ccmasker2 written in python (3.9)
+timing ccmasker written in python (3.9)
 
 real    0m28,051s
 user    0m31,487s
