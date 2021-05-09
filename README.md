@@ -12,14 +12,6 @@ For more information regarding the plugin nature of this tool:
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#external-message-modification-modules  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
-### False positives and rewrite
-Filtering for PAN data without context is a process prone to false positives.  
-Further steps to reduce false positives were required and it was a tricky process due to
-variable length of matches.  
-
-### Feedback
-This has been a learning excercise, constructive feedback is always appreciated.
-
 ### How to use
 Add the following to your rsyslog config and restart  
 More information here https://www.rsyslog.com/doc/master/configuration/modules/mmexternal.html
@@ -28,23 +20,13 @@ module(load="mmexternal")
 action(type="mmexternal" binary="/path/to/ccmasker")
 ```
 
-### Docker compose
-Build and let it run in the foreground in order to see the output
-```
-cd docker
-go build .
-docker-compose up
-```
+### Feedback
+This has been a learning excercise, constructive feedback is always appreciated.
 
-Rebuild the image with
-```
-docker-compose build
-```
-
-Send logs to the listening port  
-```
-logger -d -n localhost "this log message 5311111111111111 contains a PAN"
-```
+### False positives and rewrite
+Filtering for PAN data without context is a process prone to false positives.  
+Further steps to reduce false positives were required and it was a tricky process due to
+variable length of matches.  
 
 ### ccmasker.py
 Wrote an equivalent python script for comparison and it is actually faster ¯\_(ツ)_/¯  

@@ -1,4 +1,4 @@
 fast-luhn
 pylint
-black
 flake8
+black
