@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +12,7 @@ import (
 const maxMatches = 3
 
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
-func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) string {
+func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) (string, error) {
 	validated := false
 
 	for _, group := range filters {
@@ -27,7 +26,7 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 						cleanMatch := numFilter.ReplaceAllString(match, "")
 						cleanInt, err := strconv.Atoi(cleanMatch)
 						if err != nil {
-							log.Fatalf("error: could not convert Luhn verified numFiltered value to string")
+							return "", err
 						}
 						if luhn.Valid(cleanInt) {
 							validated = true
@@ -42,7 +41,7 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 	// If PAN data isn't found, return empty JSON
 	// Otherwise wrap to JSON and save
 	if validated == false {
-		return "{}\n"
+		return "{}\n", nil
 	}
 
 	message = strings.TrimSuffix(message, "\n")
@@ -50,7 +49,7 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 		Msg string `json:"msg"`
 	}{Msg: message})
 	if err != nil {
-		printErrorWithErrorHandling("Error %s occured during json Marshal of %s\n", err, message)
+		return "", err
 	}
-	return string(response) + "\n"
+	return string(response) + "\n", nil
 }

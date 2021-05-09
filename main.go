@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"flag"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -19,14 +18,6 @@ func closeWithErrorHandling(file *os.File, message string) {
 	}
 }
 
-// Function to print to Stderr with error handling
-func printErrorWithErrorHandling(f string, v ...interface{}) {
-	_, err := fmt.Fprintf(os.Stderr, f, v...)
-	if err != nil {
-		log.Fatalf("Could not print to Stderr: %s\n", err)
-	}
-}
-
 // Initialize flags globally
 var (
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
@@ -39,13 +30,13 @@ func main() {
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
 		if err != nil {
-			log.Fatalf("Could not create CPU profile: %s\n", err)
+			log.Fatalf("could not create CPU profile: %s\n", err)
 		}
-		defer closeWithErrorHandling(f, "Could not close cpu profile file: %s\n")
+		defer closeWithErrorHandling(f, "could not close cpu profile file: %s\n")
 
 		err = pprof.StartCPUProfile(f)
 		if err != nil {
-			log.Fatalf("Could not start CPU profile: %s\n", err)
+			log.Fatalf("could not start CPU profile: %s\n", err)
 		}
 		defer pprof.StopCPUProfile()
 	}
@@ -65,19 +56,22 @@ func main() {
 		// Get next message and strip trailing newline
 		message, err := reader.ReadString('\n')
 		if err != nil {
-			if err.Error() == "EOF" {
+			if err == io.EOF {
 				break
 			} else {
-				printErrorWithErrorHandling("Error %s occured during reader ReadString of %s\n", err, message)
-				continue
+				log.Fatalf("could not read string: %s", err)
 			}
 		}
 
 		// Process message and print
-		response := ProcessMessage(message, filters, numFilter)
+		response, err := ProcessMessage(message, filters, numFilter)
+		if err != nil {
+			log.Printf("could not process message: %s", err)
+		}
+
 		_, err = writer.WriteString(response)
 		if err != nil {
-			log.Fatalf("Error %s occured during writing to Stdout\n", err)
+			log.Fatalf("could not write to stdout: %s", err)
 		}
 	}
 
