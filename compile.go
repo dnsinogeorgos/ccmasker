@@ -9,7 +9,7 @@ type FilterGroup struct {
 }
 
 func CompileFilters() []FilterGroup {
-	s := "[ +\\-_]"
+	s := "[ +=_-]"
 	filters := []FilterGroup{
 		{
 			Mask:     "XXXX-VISA-XXXX",

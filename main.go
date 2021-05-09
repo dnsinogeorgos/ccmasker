@@ -52,6 +52,7 @@ func main() {
 	}
 	filters := CompileFilters()
 
+	// Main loop
 	for {
 		// Get next message and strip trailing newline
 		message, err := reader.ReadString('\n')
@@ -63,12 +64,11 @@ func main() {
 			}
 		}
 
-		// Process message and print
+		// Process message and print to stdout
 		response, err := ProcessMessage(message, filters, numFilter)
 		if err != nil {
 			log.Printf("could not process message: %s", err)
 		}
-
 		_, err = writer.WriteString(response)
 		if err != nil {
 			log.Fatalf("could not write to stdout: %s", err)
