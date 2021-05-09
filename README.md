@@ -12,8 +12,15 @@ For more information regarding the plugin nature of this tool:
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#external-message-modification-modules  
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
+### False positives and version 2
+Filtering for PAN data without context is a process prone to false positives.  
+Further steps to reduce false positives are required and it's a tricky process due to variable length of matches.  
+With version 2, I am testing/benchmarking, to strike a balance between optimizing for the matching and the
+non-matching path.  
+The python v2 reduced the false positives by about 50% when audit logs were included and by more than 80% for http logs.
+
 ### Feedback
-This was a learning experiment, constructive feedback is always appreciated.
+This has been a learning excercise, constructive feedback is always appreciated.
 
 ### How to use
 
@@ -61,5 +68,6 @@ sys     0m1,406s
 ```
 
 ### TODO
+* version 2 in Golang
 * experiment with benchmarks  
 * write some tests
