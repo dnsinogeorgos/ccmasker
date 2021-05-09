@@ -13,7 +13,7 @@ https://github.com/rsyslog/rsyslog/blob/master/plugins/external/INTERFACE.md#ext
 https://github.com/rsyslog/rsyslog/blob/master/plugins/external/messagemod/anon_cc_nbrs/anon_cc_nbrs.py
 
 ### How to use
-Add the following to your rsyslog config and restart.
+Add the following to your rsyslog config and restart the process.
 More information here https://www.rsyslog.com/doc/master/configuration/modules/mmexternal.html
 ```
 module(load="mmexternal")

@@ -13,11 +13,13 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: |
+        cd python
         python3 -m venv venv
         venv/bin/pip install --upgrade pip
         venv/bin/pip install -r requirements.txt
     - name: Lint with pylint, flake8 and black
       run: |
+        cd python
         venv/bin/pylint ccmasker.py
         venv/bin/flake8 ccmasker.py
         venv/bin/black ccmasker.py
