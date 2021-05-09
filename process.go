@@ -9,6 +9,10 @@ import (
 	"github.com/theplant/luhn"
 )
 
+type Message struct {
+	Msg string
+}
+
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
 func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) (string, error) {
 	validated := false
@@ -21,11 +25,14 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 				if fixedPattern.MatchString(message) {
 					matchStrings := fixedPattern.FindAllString(message, -1)
 					for _, match := range matchStrings {
+						// Prepare string for Luhn check
 						cleanMatch := numFilter.ReplaceAllString(match, "")
 						cleanInt, err := strconv.Atoi(cleanMatch)
 						if err != nil {
 							return "", err
 						}
+
+						// Check with Luhn
 						if luhn.Valid(cleanInt) {
 							validated = true
 							message = fixedPattern.ReplaceAllLiteralString(message, group.Mask)
@@ -37,15 +44,13 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 	}
 
 	// If PAN data isn't found, return empty JSON
-	// Otherwise wrap to JSON and save
 	if validated == false {
 		return "{}\n", nil
 	}
 
+	// If PAN data is found, wrap to JSON and return
 	message = strings.TrimSuffix(message, "\n")
-	response, err := json.Marshal(struct {
-		Msg string `json:"msg"`
-	}{Msg: message})
+	response, err := json.Marshal(Message{Msg: message})
 	if err != nil {
 		return "", err
 	}
