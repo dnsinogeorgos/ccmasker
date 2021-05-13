@@ -2,12 +2,26 @@ package main
 
 import "regexp"
 
+// FilterGroup was necessary in order to eliminate false positives with the luhn check
+// Some PANs are of variable length, which causes issues with the combination of
+// matching and checking the luhn number.
+//
+// Mask is a string denoting the card type and is used to mask the PAN number in the
+// message.
+// Variable is the variable length compiled Regexp. This is matched first to reduce
+// the total number iterations for each message.
+// Fixed is an array of fixed length compiled Regexp. Message is iterated upon with
+// this filter until a luhn check matches.
 type FilterGroup struct {
 	Mask     string
 	Variable *regexp.Regexp
 	Fixed    []*regexp.Regexp
 }
 
+// CompileFilters returns a slice of FilterGroup values
+// Details on PANs taken from https://en.wikipedia.org/wiki/Payment_card_number
+// Since we are forced to iterate over all filters regardless of matching, order does
+// not matter.
 func CompileFilters() []FilterGroup {
 	s := "[ +=_-]"
 	filters := []FilterGroup{

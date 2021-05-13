@@ -14,6 +14,8 @@ type Message struct {
 }
 
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
+// The iterations appear wasteful, but there are edge cases which make iterating for
+// all possible PAN lengths.
 func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) (string, error) {
 	validated := false
 
