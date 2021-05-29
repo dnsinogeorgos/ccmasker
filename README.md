@@ -26,9 +26,9 @@ This has been a learning excercise, constructive feedback is always appreciated.
 ### False positives and rewrite
 Filtering for PAN data without context is a process prone to false positives.  
 Further steps to reduce false positives were required and it was a tricky process due to
-variable length of matches.  
+variable length of matches.
 
-### ccmasker.py
+### Python version
 Wrote an equivalent python script for comparison and it is actually faster ¯\_(ツ)_/¯  
 A test with 748mb of real logs
 ```
@@ -46,5 +46,4 @@ sys     0m1,303s
 ```
 
 ### TODO
-* experiment with benchmarks  
-* write some tests
+* experiment with benchmarks    
