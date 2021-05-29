@@ -1,4 +1,4 @@
-package main
+package ccmasker
 
 import (
 	"encoding/json"
@@ -15,14 +15,14 @@ type Message struct {
 
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
 // The iterations appear wasteful, but there are edge cases which make iterating for
-// all possible PAN lengths.
-func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Regexp) (string, error) {
+// all possible PAN lengths necessary.
+func ProcessMessage(message string, filters []filterGroup, numFilter *regexp.Regexp) (string, error) {
 	validated := false
 
 	for _, group := range filters {
 		// If variable length pattern matches move on
-		if group.Variable.MatchString(message) {
-			for _, fixedPattern := range group.Fixed {
+		if group.variable.MatchString(message) {
+			for _, fixedPattern := range group.fixed {
 				// If fixed length pattern matches move on
 				if fixedPattern.MatchString(message) {
 					matchStrings := fixedPattern.FindAllString(message, -1)
@@ -33,11 +33,10 @@ func ProcessMessage(message string, filters []FilterGroup, numFilter *regexp.Reg
 						if err != nil {
 							return "", err
 						}
-
 						// Check with Luhn
 						if luhn.Valid(cleanInt) {
 							validated = true
-							message = fixedPattern.ReplaceAllLiteralString(message, group.Mask)
+							message = fixedPattern.ReplaceAllLiteralString(message, group.mask)
 						}
 					}
 				}

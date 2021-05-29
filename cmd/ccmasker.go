@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bufio"
 	"flag"
-	"io"
 	"log"
 	"os"
-	"regexp"
 	"runtime"
 	"runtime/pprof"
+
+	"github.com/dnsinogeorgos/ccmasker/internal/ccmasker"
 )
 
 // Function to defer closing of profile files with error handling
@@ -18,7 +17,6 @@ func closeWithErrorHandling(file *os.File, message string) {
 	}
 }
 
-// Initialize flags globally
 var (
 	cpuprofile = flag.String("cpuprofile", "", "write cpu profile to `file`")
 	memprofile = flag.String("memprofile", "", "write memory profile to `file`")
@@ -26,6 +24,7 @@ var (
 
 func main() {
 	flag.Parse()
+
 	// Conditional CPU profiling
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
@@ -41,39 +40,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	// Initialize buffered reader and unbuffered writer
-	reader := bufio.NewReader(os.Stdin)
-	writer := io.StringWriter(os.Stdout)
-
-	// Initialize and compile filters
-	numFilter, err := regexp.Compile("[^0-9]")
-	if err != nil {
-		log.Fatalf("could not compile number filter: %s", err)
-	}
-	filters := CompileFilters()
-
-	// Main loop
-	for {
-		// Get next message and strip trailing newline
-		message, err := reader.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				break
-			} else {
-				log.Fatalf("could not read string: %s", err)
-			}
-		}
-
-		// Process message and print to stdout
-		response, err := ProcessMessage(message, filters, numFilter)
-		if err != nil {
-			log.Printf("could not process message: %s", err)
-		}
-		_, err = writer.WriteString(response)
-		if err != nil {
-			log.Fatalf("could not write to stdout: %s", err)
-		}
-	}
+	ccmasker.Run()
 
 	// Conditional memory profiling
 	if *memprofile != "" {
