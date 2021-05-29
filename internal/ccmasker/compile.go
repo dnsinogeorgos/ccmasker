@@ -20,7 +20,7 @@ type filterGroup struct {
 
 // compileFilters returns a slice of filterGroup values
 // Details on PANs taken from https://en.wikipedia.org/wiki/Payment_card_number
-// Order of fixed length filtes ** MUST ** be from longer to shorter
+// Order of fixed length filters ** MUST ** be from longer to shorter
 func compileFilters() []filterGroup {
 	s := " +=_-"
 	filters := []filterGroup{
