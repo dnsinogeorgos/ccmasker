@@ -30,13 +30,9 @@ func Run() {
 		}
 
 		// Process message and print to stdout
-		response, err := ProcessMessage(message, filters, numFilter)
+		err = ProcessMessage(writer, message, filters, numFilter)
 		if err != nil {
 			log.Printf("could not process message: %s", err)
-		}
-		_, err = writer.Write(response)
-		if err != nil {
-			log.Fatalf("could not write to stdout: %s", err)
 		}
 	}
 }
