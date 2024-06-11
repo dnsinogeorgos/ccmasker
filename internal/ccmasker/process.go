@@ -2,16 +2,16 @@ package ccmasker
 
 import (
 	"bytes"
-	"encoding/json"
 	"regexp"
 	"strconv"
 
+	"github.com/mailru/easyjson/jwriter"
 	"github.com/theplant/luhn"
 )
 
 //easyjson:json
 type Message struct {
-	Msg []byte `json:"msg"`
+	Msg string `json:"msg,nocopy"`
 }
 
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
@@ -52,9 +52,12 @@ func ProcessMessage(message []byte, filters []filterGroup, numFilter *regexp.Reg
 
 	// If PAN data is found, wrap to JSON and return
 	message = bytes.TrimSuffix(message, []byte{'\n'})
-	response, err := json.Marshal(Message{Msg: message})
+	writer := jwriter.Writer{}
+	jsonMessage := Message{Msg: string(message)}
+	jsonMessage.MarshalEasyJSON(&writer)
+	jsonBytes, err := writer.BuildBytes()
 	if err != nil {
 		return []byte{}, err
 	}
-	return append(response, '\n'), nil
+	return append(jsonBytes, '\n'), nil
 }
