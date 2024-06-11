@@ -11,7 +11,7 @@ import (
 func Run() {
 	// Initialize buffered reader and unbuffered writer
 	reader := bufio.NewReader(os.Stdin)
-	writer := io.StringWriter(os.Stdout)
+	writer := io.Writer(os.Stdout)
 
 	// Initialize and compile filters
 	numFilter := regexp.MustCompile("[^0-9]")
@@ -20,7 +20,7 @@ func Run() {
 	// Main loop
 	for {
 		// Get next message and strip trailing newline
-		message, err := reader.ReadString('\n')
+		message, err := reader.ReadSlice('\n')
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -34,7 +34,7 @@ func Run() {
 		if err != nil {
 			log.Printf("could not process message: %s", err)
 		}
-		_, err = writer.WriteString(response)
+		_, err = writer.Write(response)
 		if err != nil {
 			log.Fatalf("could not write to stdout: %s", err)
 		}

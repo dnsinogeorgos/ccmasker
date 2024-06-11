@@ -1,42 +1,43 @@
 package ccmasker
 
 import (
+	"bytes"
 	"encoding/json"
 	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/theplant/luhn"
 )
 
+//easyjson:json
 type Message struct {
-	Msg string
+	Msg []byte `json:"msg"`
 }
 
 // ProcessMessage filters the message through regexp filters and returns appropriate response for rsyslog
 // The iterations appear wasteful, but there are edge cases which make iterating for
 // all possible PAN lengths necessary.
-func ProcessMessage(message string, filters []filterGroup, numFilter *regexp.Regexp) (string, error) {
+func ProcessMessage(message []byte, filters []filterGroup, numFilter *regexp.Regexp) ([]byte, error) {
 	validated := false
 
 	for _, group := range filters {
 		// If variable length pattern matches move on
-		if group.variable.MatchString(message) {
+		if group.variable.Match(message) {
 			for _, fixedPattern := range group.fixed {
 				// If fixed length pattern matches move on
-				if fixedPattern.MatchString(message) {
-					matchStrings := fixedPattern.FindAllString(message, -1)
+				if fixedPattern.Match(message) {
+					matchStrings := fixedPattern.FindAll(message, -1)
 					for _, match := range matchStrings {
 						// Prepare string for Luhn check
-						cleanMatch := numFilter.ReplaceAllString(match, "")
-						cleanInt, err := strconv.Atoi(cleanMatch)
+						cleanMatch := numFilter.ReplaceAll(match, []byte{})
+						cleanInt, err := strconv.Atoi(string(cleanMatch))
 						if err != nil {
-							return "", err
+							return []byte{}, err
 						}
 						// Check with Luhn
 						if luhn.Valid(cleanInt) {
 							validated = true
-							message = fixedPattern.ReplaceAllLiteralString(message, group.mask)
+							message = fixedPattern.ReplaceAllLiteral(message, group.mask)
 						}
 					}
 				}
@@ -46,14 +47,14 @@ func ProcessMessage(message string, filters []filterGroup, numFilter *regexp.Reg
 
 	// If PAN data isn't found, return empty JSON
 	if validated == false {
-		return "{}\n", nil
+		return []byte{'{', '}', '\n'}, nil
 	}
 
 	// If PAN data is found, wrap to JSON and return
-	message = strings.TrimSuffix(message, "\n")
+	message = bytes.TrimSuffix(message, []byte{'\n'})
 	response, err := json.Marshal(Message{Msg: message})
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
-	return string(response) + "\n", nil
+	return append(response, '\n'), nil
 }
