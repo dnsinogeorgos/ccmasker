@@ -6,7 +6,6 @@ import (
 	"os"
 	"runtime"
 	"runtime/pprof"
-	"time"
 
 	"github.com/dnsinogeorgos/ccmasker/internal/ccmasker"
 )
@@ -43,8 +42,6 @@ func main() {
 
 	ccmasker.Run()
 
-	printGCStats()
-
 	// Conditional memory profiling
 	if *memprofile != "" {
 		f, err := os.Create(*memprofile)
@@ -59,29 +56,4 @@ func main() {
 			log.Fatalf("could not write memory profile: %s\n", err)
 		}
 	}
-}
-
-func printGCStats() {
-	var stats runtime.MemStats
-	runtime.ReadMemStats(&stats)
-
-	// Calculate average GC pause
-	var totalPauseNs uint64
-	for _, pause := range stats.PauseNs {
-		totalPauseNs += pause
-	}
-	avgPauseNs := totalPauseNs / uint64(len(stats.PauseNs))
-
-	// Calculate average objects collected per GC cycle
-	avgObjectsCollected := float64(stats.NumGC) / float64(stats.NumGC)
-
-	log.Println("Garbage Collection Stats:")
-	log.Printf("  Number of GCs: %v\n", stats.NumGC)
-	log.Printf("  Total GC Pause Time: %v ms\n", stats.PauseTotalNs/1e6)
-	log.Printf("  Average GC Pause Time: %v ms\n", avgPauseNs/1e6)
-	log.Printf("  Total Alloc: %v bytes\n", stats.TotalAlloc)
-	log.Printf("  Heap Alloc: %v bytes\n", stats.HeapAlloc)
-	log.Printf("  Heap Objects: %v\n", stats.HeapObjects)
-	log.Printf("  Average Objects Collected per GC: %v\n", avgObjectsCollected)
-	log.Printf("  Last GC Time: %v\n", time.Unix(0, int64(stats.LastGC)))
 }
