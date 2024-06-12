@@ -13,7 +13,7 @@ import "regexp"
 // fixed is an array of fixed length compiled Regexp. Message is iterated upon with
 // this filter until a luhn check matches.
 type filterGroup struct {
-	mask     string
+	mask     []byte
 	variable *regexp.Regexp
 	fixed    []*regexp.Regexp
 }
@@ -25,7 +25,7 @@ func compileFilters() []filterGroup {
 	s := " +=_-"
 	filters := []filterGroup{
 		{
-			mask:     "XXXX-VISA-XXXX",
+			mask:     []byte("XXXX-VISA-XXXX"),
 			variable: regexp.MustCompile("4[0-9]{3}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?([0-9]{4}|[0-9])"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("4[0-9]{3}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}"),
@@ -33,14 +33,14 @@ func compileFilters() []filterGroup {
 			},
 		},
 		{
-			mask:     "XXXX-Master5xxx-XXXX",
+			mask:     []byte("XXXX-Master5xxx-XXXX"),
 			variable: regexp.MustCompile("5[1-5][0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("5[1-5][0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}"),
 			},
 		},
 		{
-			mask:     "XXXX-Maestro-XXXX",
+			mask:     []byte("XXXX-Maestro-XXXX"),
 			variable: regexp.MustCompile("(5018|5020|5038|5893|6304|6759|6761|6762|6763)[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{0,4}[" + s + "]?[0-9]{0,3}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("(5018|5020|5038|5893|6304|6759|6761|6762|6763)[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{3}"),
@@ -54,7 +54,7 @@ func compileFilters() []filterGroup {
 			},
 		},
 		{
-			mask:     "XXXX-MaestroUK-XXXX",
+			mask:     []byte("XXXX-MaestroUK-XXXX"),
 			variable: regexp.MustCompile("(6767[" + s + "]?70[0-9]{2}|6767[" + s + "]?74[0-9]{2})[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{0,4}[" + s + "]?[0-9]{0,3}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("(6767[" + s + "]?70[0-9]{2}|6767[" + s + "]?74[0-9]{2})[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{3}"),
@@ -68,21 +68,21 @@ func compileFilters() []filterGroup {
 			},
 		},
 		{
-			mask:     "XXXX-Master2xxx-XXXX",
+			mask:     []byte("XXXX-Master2xxx-XXXX"),
 			variable: regexp.MustCompile("2[2-7][0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("2[2-7][0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}"),
 			},
 		},
 		{
-			mask:     "XXXX-AmEx-XXXX",
+			mask:     []byte("XXXX-AmEx-XXXX"),
 			variable: regexp.MustCompile("(34|37)[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{3}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("(34|37)[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{3}"),
 			},
 		},
 		{
-			mask:     "XXXX-DinersInt-XXXX",
+			mask:     []byte("XXXX-DinersInt-XXXX"),
 			variable: regexp.MustCompile("36[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{2,4}[" + s + "]?[0-9]{0,3}"),
 			fixed: []*regexp.Regexp{
 				regexp.MustCompile("36[0-9]{2}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{4}[" + s + "]?[0-9]{3}"),
