@@ -6,5 +6,3 @@ require (
 	github.com/mailru/easyjson v0.7.7
 	github.com/theplant/luhn v0.0.0-20170224032821-81a1a381387a
 )
-
-require github.com/josharian/intern v1.0.0 // indirect
